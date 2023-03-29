@@ -1,33 +1,19 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+@extends('layouts.app')
+@section('content')
 
-        <title>Laravel 9 + Bootstrap Template</title>
-
-        {{-- Includiamo gli assets con la direttiva @vite --}}
-        @vite('resources/js/app.js')
-    </head>
-    <body>
-
-        <main>
-            <div class="container">
-                <div class="row">
-                    <div class="col text-center">
-
-                        <div class="card">
-                            <div class="card-body">
-                                <img src="{{ Vite::asset('resources/img/laravel.png') }}" alt="">
-
-                                <h1 class="card-title">Laravel 9 + Bootstrap Template</h1>
-                            </div>
-                        </div>
-
-                    </div>
+   <div class="container-fluid py-5 bg-light">
+        <div class="row">
+            <div class="col-md-6 d-flex align-items-center">
+                <div>
+                    <h1>Welcome to Project Portfolio!</h1>
+                    <p class="lead mb-4">Showcase your projects and connect with other professionals.</p>
+                    <a href="{{ route('register') }}" class="btn btn-primary btn-lg mr-3">Get Started</a>
+                    <a href="{{ route('login') }}" class="btn btn-outline-primary btn-lg">Log In</a>
                 </div>
             </div>
-        </main>
-
-    </body>
-</html>
+            <div class="col-md-6">
+                <img src="{{ asset('img/portfolio.png') }}" alt="Portfolio Image" class="img-fluid">
+            </div>
+        </div>
+    </div>
+@endsection
