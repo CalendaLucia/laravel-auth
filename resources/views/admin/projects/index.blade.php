@@ -11,15 +11,18 @@
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th scope="col">{{ __('Title') }}</th>
-                                    <th scope="col">{{ __('Description') }}</th>
-                                    <th scope="col">{{ __('Actions') }}</th>
+                                     <th scope="col">{{ __('Title') }}</th>
+                                     <th scope="col">{{ __('Image') }}</th>
+                                     <th scope="col">{{ __('Description') }}</th>
+                                     <th scope="col">{{ __('Actions') }}</th>
+                                    
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($projects as $project)
                                     <tr>
                                         <td>{{ $project->title }}</td>
+                                        <td><img class="img-fluid w-25" src="{{ asset('storage/images/' . $project->image) }}" alt="{{ $project->title }}"></td>
                                         <td>{{ $project->description }}</td>
                                         <td>
                                             <a href="{{ route('projects.show', $project) }}" class="btn btn-primary">{{ __('View') }}</a>

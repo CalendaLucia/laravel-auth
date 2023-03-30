@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Admin\ProjectController;
+use App\Http\Controllers\Controller;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,6 +25,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::resource('projects', ProjectController::class);
 });
 
+Route::post('/projects/{project}/send-email', [MailController::class, 'sendNewProjectCreated'])->name('projects.send-email');
 
 
 Route::get('/dashboard', function () {

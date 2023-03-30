@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use App\Models\Project;
 use Illuminate\Support\Facades\Storage;
 
+use App\Mail\NewProjectCreated;
+
 
 class ProjectController extends Controller
 {
@@ -16,11 +18,11 @@ class ProjectController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        $projects = Project::all();
-        return view('admin.projects.index', compact('projects'));
-    }
+   public function index()
+{
+    $projects = Project::all();
+    return view('admin.projects.index', compact('projects'));
+}
 
     /**
      * Show the form for creating a new resource.
@@ -38,25 +40,27 @@ class ProjectController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'title' => 'required|max:255',
-            'description' => 'required',
-            'image' => 'required|image|max:2048'
-        ]);
+  public function store(Request $request)
+{
+    $validated = $request->validate([
+        'title' => 'required|max:255',
+        'description' => 'required',
+        'image' => 'required|image|max:2048'
+    ]);
 
-        $image = $validated['image']->store('public/images');
+    // Salva l'immagine nella cartella "public/images" e ottiene il path
+    $path = $validated['image']->store('public/images');
 
-        $project = Project::create([
-            'title' => $validated['title'],
-            'description' => $validated['description'],
-            'image' => $image
-        ]);
+    // Crea il nuovo progetto
+    $project = Project::create([
+        'title' => $validated['title'],
+        'description' => $validated['description'],
+        'image' => $path // Salva il path dell'immagine nel database
+    ]);
 
-        return redirect()->route('admin.projects.show', $project->id);
-    }
-
+    // Invia la mail di notifica
+    app(MailController::class)->sendNewProjectCreated($project);
+}
     /**
      * Display the specified resource.
      *
@@ -66,7 +70,7 @@ class ProjectController extends Controller
     public function show($id)
     {
         $project = Project::findOrFail($id);
-        return view('admin.projects.show', compact('project'));
+        return view('projects.show', compact('project'));
     }
 
     /**
@@ -78,7 +82,7 @@ class ProjectController extends Controller
     public function edit($id)
     {
         $project = Project::findOrFail($id);
-        return view('admin.projects.edit', compact('project'));
+        return view('projects.edit', compact('project'));
     }
 
     /**
@@ -111,7 +115,7 @@ class ProjectController extends Controller
             'image' => $image
         ]);
 
-        return redirect()->route('admin.projects.show', $project->id);
+        return redirect()->route('projects.show', $project->id);
     }
 
     /**
@@ -120,8 +124,11 @@ class ProjectController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
-        //
-    }
+    public function destroy(Project $project)
+{
+    $project->delete();
+
+    return redirect()->route('projects.index')
+        ->with('success', 'Project deleted successfully.');
+}
 }
